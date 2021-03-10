@@ -12,9 +12,9 @@ namespace compipascal1.Analisis
         {
             #region ER
             //primitivos
-            NumberLiteral entero = new NumberLiteral("INT");
+            NumberLiteral number = new NumberLiteral("NUMBER");
             StringLiteral cadena = new StringLiteral("CADENA", "'");
-            RegexBasedTerminal doble = new RegexBasedTerminal("DOUBLE", "[0-9]+'.'[0-9]+");
+            
             RegexBasedTerminal bolean = new RegexBasedTerminal("BOOLEAN", "true|false");
             IdentifierTerminal id = new IdentifierTerminal("ID");
 
@@ -107,8 +107,6 @@ namespace compipascal1.Analisis
             NonTerminal VARIABLE = new NonTerminal("VARIABLE");
             NonTerminal TIPOPRI = new NonTerminal("TIPO_PRIMITIVO");
             NonTerminal TIPOID = new NonTerminal("TIPO_CONID");
-            NonTerminal VALORPRI = new NonTerminal("VALOR_PRIMITIVO");
-            NonTerminal VALORID = new NonTerminal("VALOR_CONID");
             NonTerminal TIPONOPRI = new NonTerminal("TIPO_NOPRI");
             NonTerminal OBJ = new NonTerminal("OBJETO");
             NonTerminal ARR = new NonTerminal("ARRAY");
@@ -181,12 +179,11 @@ namespace compipascal1.Analisis
 
             LISTA_VARIABLE.Rule = MakePlusRule(LISTA_VARIABLE, VARIABLE);
 
-            CONSTANTE.Rule = id + igual + VALORPRI + ptocoma;
+            CONSTANTE.Rule = id + igual + ELOG + ptocoma;
 
             TYPES.Rule = id + igual + TIPONOPRI + ptocoma;
 
-            VARIABLE.Rule = id + dospto + TIPOID + igual + VALORID + ptocoma
-                           | id + dospto + TIPOID + ptocoma
+            VARIABLE.Rule = LISTA_ID + dospto + TIPOID + igual + ELOG + ptocoma
                            | LISTA_ID + dospto + TIPOID + ptocoma
                            ;
 
@@ -205,16 +202,6 @@ namespace compipascal1.Analisis
             ASIGN.Rule = id + asig + ELOG + ptocoma
                         | id + asig + ELOG
                         ;
-
-            VALORID.Rule = VALORPRI
-                        | id
-                        ;
-
-            VALORPRI.Rule = entero
-                            | doble
-                            | cadena
-                            | bolean
-                            ;
 
             TIPOPRI.Rule = rinteger
                           | rstring
@@ -289,8 +276,8 @@ namespace compipascal1.Analisis
                       | EARI + multi + EARI
                       | EARI + div + EARI
                       | EARI + mod + EARI
-                      | entero
-                      | doble
+                      | menos + EARI
+                      | number
                       | cadena
                       | LLAMA
                       ;
@@ -342,7 +329,7 @@ namespace compipascal1.Analisis
                      | L_EBC + dospto + INST
                      ;
 
-            EBC.Rule = entero
+            EBC.Rule = number
                     | bolean
                     | cadena
                     ;
@@ -353,7 +340,7 @@ namespace compipascal1.Analisis
             WL.Rule = rwhile + ELOG + rdo + INST
                     | rwhile + ELOG + rdo + BEG
                     ;
-            FORVA.Rule = entero
+            FORVA.Rule = number
                        | bolean
                        ;
 
