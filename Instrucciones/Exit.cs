@@ -20,14 +20,14 @@ namespace compipascal1.Instrucciones
             this.valorR = valorR;
         }
 
-        public object Ejecutar(Entorno ent, AST tree)
+        public object Ejecutar(Entorno ent, AST tree, Erroresglo herror)
         {
-            return valorR.resolver(ent, tree);
+            return valorR.resolver(ent, tree,herror);
         }
 
-        public Simbolos resolver(Entorno ent, AST tree)
+        public Simbolos resolver(Entorno ent, AST tree, Erroresglo herror)
         {
-            return valorR.resolver(ent, tree);
+            return valorR.resolver(ent, tree,herror);
         }
     }
 }

@@ -19,7 +19,7 @@ namespace compipascal1.Instrucciones
             this.Linea = linea;
             this.Columna = columna;
         }
-        public object Ejecutar(Entorno ent, AST tree)
+        public object Ejecutar(Entorno ent, AST tree, Erroresglo herror)
         {
             throw new NotImplementedException();
         }

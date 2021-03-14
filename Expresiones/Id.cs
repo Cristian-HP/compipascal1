@@ -12,7 +12,7 @@ namespace compipascal1.Expresiones
         public int Linea { get; set; }
         public int Columna { get; set; }
         public string name { get; set; }
-        public  Simbolos resolver(Entorno ent, AST tree)
+        public  Simbolos resolver(Entorno ent, AST tree, Erroresglo herror)
         {
             Simbolos temp = ent.obtenerVariable(name.ToLower());
             if (temp != null)
@@ -22,7 +22,7 @@ namespace compipascal1.Expresiones
             else
             {
                 //error semantico   poner errore nueva clase error
-                throw new Exception();
+                throw new Errorp(Linea,Columna,"NO se encuentra la variable","Semantico", ent.nombre);
             }
         }
 

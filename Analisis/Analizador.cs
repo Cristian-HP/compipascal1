@@ -13,30 +13,21 @@ namespace compipascal1.Analisis
 {
     class Analizador
     {
-
+        Erroresglo miserrores = new Erroresglo();
+        ParseTreeNode raiz;
         public void analizar(string cadena)
         {
             Gramatica gramatica = new Gramatica();
             LanguageData lenguaje = new LanguageData(gramatica);
-            foreach (var item in lenguaje.Errors)
-            {
-                Console.WriteLine(item);
-            }
-
             Parser parser = new Parser(lenguaje);
             ParseTree arbol = parser.Parse(cadena);
-            ParseTreeNode raiz = arbol.Root;
-            if (raiz == null)
-            {
-                Console.WriteLine(arbol.ParserMessages[0].Message);
-                return;
+            raiz = arbol.Root;
+
+            bool vefica = verificarerrores(arbol, raiz);
+            if (vefica)
+            {    
+                ejecucion(arbol,miserrores);
             }
-            Console.WriteLine("pasola peuba2");
-            generarGrafo(raiz);
-            Console.WriteLine("paso la prueba");
-
-            ejecucion(arbol);
-
         }
         public void generarGrafo(ParseTreeNode raiz)
         {
@@ -66,19 +57,56 @@ namespace compipascal1.Analisis
             }
         }
 
-        public static void ejecucion(ParseTree tree)
+        public void generarGrafoF()
+        {
+            generarGrafo(raiz);
+        }
+        public static void ejecucion(ParseTree tree,Erroresglo elherror)
         {
             CreadorAST arbolgenerado = new CreadorAST(tree);
             AST ast = arbolgenerado.mytree;
             Entorno ent = new Entorno(null,"GLOBAL");
-            if(ast != null)
+            if (ast != null)
             {
                 foreach(Instruccion inst in ast.instrucciones)
                 {
-                    inst.Ejecutar(ent, ast);
+                    inst.Ejecutar(ent, ast, elherror);
                 }
             }
 
+        }
+
+        public void graficaerrores()
+        {
+            miserrores.graficar();
+        }
+        private bool verificarerrores(ParseTree arbol,ParseTreeNode raiz)
+        {
+            if(raiz == null)
+            {
+                Errorp mi = new Errorp(0, 0, "ERROR Fatal No se Pudo Recuperar El analizador", "Analizador","Gramatica");
+                miserrores.adderr(mi);
+                Form1.errorcon.AppendText(mi.ToString() + "\n");
+                return false;
+            }else if(arbol.ParserMessages.Count > 0)
+            {
+                string tipoerro;
+                for (int i = 0; i < arbol.ParserMessages.Count; i++)
+                {
+                    if (arbol.ParserMessages[i].Message.Contains("Syntax"))
+                        tipoerro = "Sintactico";
+                    else
+                        tipoerro = "Lexico";
+                    Errorp mier = new Errorp(arbol.ParserMessages[i].Location.Line,arbol.ParserMessages[i].Location.Column,arbol.ParserMessages[i].Message,tipoerro,"Gramatica");
+                    miserrores.adderr(mier);
+                    Form1.errorcon.AppendText(mier.ToString() + "\n");
+                }
+                return false;
+            }else if(raiz != null)
+            {
+                return true;
+            }
+            return false;
         }
     }
 }

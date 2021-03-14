@@ -24,11 +24,11 @@ namespace compipascal1.Instrucciones
             Columna = columna;
         }
 
-        public  object Ejecutar(Entorno ent, AST tree)
+        public  object Ejecutar(Entorno ent, AST tree, Erroresglo herror)
         {
-            Simbolos temvalor = valor.resolver(ent, tree);
+            Simbolos temvalor = valor.resolver(ent, tree,herror);
             if (temvalor.tipo.tipo != Tipos.BOOLEAN)
-                throw new Errorp(Linea, Columna, "La expresion que tiene de condicion el 'IF' no es booleano sino de tipo "+temvalor.tipo.tipo.ToString(), "Semantico");
+                throw new Errorp(Linea, Columna, "La expresion que tiene de condicion el 'IF' no es booleano sino de tipo "+temvalor.tipo.tipo.ToString(), "Semantico", ent.nombre);
             if (bool.Parse(temvalor.valor.ToString()))
             {
                 try
@@ -39,22 +39,25 @@ namespace compipascal1.Instrucciones
                             return ints;
                         if (ints is Exit)
                             return ints;
-                        Object resl= ints.Ejecutar(ent, tree);
+                        Object resl= ints.Ejecutar(ent, tree,herror);
                         if (resl is Exit)
                             return resl;
          
                     }
                     return null;
                 }
-                catch
+                catch(Errorp er)
                 {
+                    herror.adderr(er);
+                    Form1.errorcon.AppendText(er.ToString() + "\n");
+                    return null;
                     //agregar el error a alguna parte
                 }
             }
             else
             {
                 if (_else != null)
-                    _else.Ejecutar(ent, tree);
+                    _else.Ejecutar(ent, tree,herror);
             }
 
             return null;

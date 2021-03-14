@@ -19,7 +19,7 @@ namespace compipascal1.Expresiones
             Columna = columna;
             Linea = linea;
         }
-        public  Simbolos resolver(Entorno ent, AST tree)
+        public  Simbolos resolver(Entorno ent, AST tree, Erroresglo herror)
         {
             Tipos temp2 = Obtenertipo(valor);
             Tipo tipo = new Tipo(temp2, null);

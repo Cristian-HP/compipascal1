@@ -67,20 +67,29 @@ namespace compipascal1.Simbolo
                 actual = actual.padre;
             }
         }
-
+        private string textdot(Entorno ent)
+        {
+            string dottex = "";
+            for (int i = 0; i < ent.variables.Count; i++)
+            {
+                dottex += "<tr> \n ";
+                dottex += "<td color ='blue' >" + ent.variables.ElementAt(i).Key + "</td><td color ='blue'>" + ent.variables.ElementAt(i).Value.tipo.tipo.ToString() + "</td><td color ='blue'>" + ent.nombre;
+                dottex += "</td><td color ='blue'>" + (ent.lineas.ElementAt(i) + 1) + "</td><td color ='blue'>" + ent.columnas.ElementAt(i) + "</td>\n</tr>\n";
+            }
+            return dottex;
+        }
         public void graficartabla()
         {
+            Entorno temporal = this;
             string dottex = "digraph { \n  tbl [ \n    shape = plaintext \n    label =< \n ";
             dottex += "<table border ='0' cellborder ='1' color ='RED' cellspacing ='1' >";
             dottex += "<tr><td> Nombre </td><td> Tipo </td><td> Ambito </td><td> Fila </td><td> Columna </td></tr> ";
-            for(int i=0;i<variables.Count;i++)
+            while(temporal != null)
             {
-                dottex += "<tr> \n ";
-                dottex += "<td color ='blue' >" + variables.ElementAt(i).Key + "</td><td color ='blue'>"+variables.ElementAt(i).Value.tipo.tipo.ToString()+"</td><td color ='blue'>"+nombre;
-                dottex += "</td><td color ='blue'>" + (lineas.ElementAt(i)+1)+"</td><td color ='blue'>" + columnas.ElementAt(i)+"</td>\n</tr>\n";
+                dottex += textdot(temporal);
+                temporal = temporal.padre;
             }
             dottex += " </table> \n>]; \n}";
-
             string path = "C:\\compiladores2\\";
             string name = nombre;
             string temp = Path.Combine(path, name);

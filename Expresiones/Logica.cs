@@ -17,11 +17,11 @@ namespace compipascal1.Expresiones
         public string tipoope { get; set; }
 
         private bool unario;
-        public  Simbolos resolver(Entorno ent, AST tree)
+        public  Simbolos resolver(Entorno ent, AST tree, Erroresglo herror)
         {
             if (unario)
             {
-                Simbolos unariotemp = Izquierda.resolver(ent, tree);
+                Simbolos unariotemp = Izquierda.resolver(ent, tree,herror);
                 if (unariotemp.tipo.tipo == Tipos.INTEGER)
                 {
                     return new Simbolos(~int.Parse(unariotemp.ToString()), new Tipo(unariotemp.tipo.tipo, ""), "");
@@ -32,16 +32,16 @@ namespace compipascal1.Expresiones
                 }
                 else
                 {
-                    throw new Errorp(Linea, Columna, "No se puede realizar la operacion unaria " + palabraope() + " con el valor de tipo " + unariotemp.tipo.ToString(), "Semantico");
+                    throw new Errorp(Linea, Columna, "No se puede realizar la operacion unaria " + palabraope() + " con el valor de tipo " + unariotemp.tipo.ToString(), "Semantico", ent.nombre);
                 }
             }
             else
             {
-                Simbolos izq = Izquierda.resolver(ent, tree);
-                Simbolos der = Derecha.resolver(ent, tree);
+                Simbolos izq = Izquierda.resolver(ent, tree,herror);
+                Simbolos der = Derecha.resolver(ent, tree,herror);
                 Tipos tiporesul = Tablatipos.getTipo(izq.tipo, der.tipo, tipoope);
                 if (tiporesul == Tipos.ERROR)
-                    throw new Errorp(Linea, Columna, "No se puede realizar la operacion " + palabraope() + " entre " + izq.tipo.ToString() + " y un " + der.tipo.ToString(), "Semantico");
+                    throw new Errorp(Linea, Columna, "No se puede realizar la operacion " + palabraope() + " entre " + izq.tipo.ToString() + " y un " + der.tipo.ToString(), "Semantico", ent.nombre);
 
                 Tipo temptipo = new Tipo(tiporesul, null);
                 Simbolos resul;

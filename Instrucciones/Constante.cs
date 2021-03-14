@@ -14,18 +14,20 @@ namespace compipascal1.Instrucciones
         public int Columna { get; set; }
         private Expresion valor;
         private Simbolos constante;
-        public  object Ejecutar(Entorno ent, AST tree)
+        public  object Ejecutar(Entorno ent, AST tree, Erroresglo herror)
         {
             try
             {
-                Simbolos valor = this.valor.resolver(ent, tree);
+                Simbolos valor = this.valor.resolver(ent, tree,herror);
                 constante.tipo = valor.tipo;
                 constante.valor = valor.valor;
                 ent.declararVariable(constante.id.ToLower(), constante,Linea,Columna);
 
             }
-            catch
+            catch(Errorp er)
             {
+                herror.adderr(er);
+                Form1.errorcon.AppendText(er.ToString() + "\n");
                 //agregar el error a algun lado
             }
             return null;

@@ -12,19 +12,28 @@ namespace compipascal1.Instrucciones
         public int Linea { get; set; }
         public int Columna { get; set; }
         private LinkedList<Instruccion> instrucciones;
-        public  object Ejecutar(Entorno ent, AST tree)
+        public  object Ejecutar(Entorno ent, AST tree, Erroresglo herror)
         {
-            foreach (Instruccion inst in instrucciones)
+            try
             {
-                if (inst is Break || inst is Continue)
-                    return inst;
-                if (inst is Exit)
-                    return inst;
-                object resl= inst.Ejecutar(ent, tree);
-                if (resl is Exit)
-                    return resl;
+                foreach (Instruccion inst in instrucciones)
+                {
+                    if (inst is Break || inst is Continue)
+                        return inst;
+                    if (inst is Exit)
+                        return inst;
+                    object resl = inst.Ejecutar(ent, tree,herror);
+                    if (resl is Exit)
+                        return resl;
+                }
+                return null;
+            }catch(Errorp er)
+            {
+                herror.adderr(er);
+                Form1.errorcon.AppendText(er.ToString() + "\n");
+                return null;
             }
-            return null;
+            
         }
 
         public ELSE(LinkedList<Instruccion> instrucciones,int linea,int columna)

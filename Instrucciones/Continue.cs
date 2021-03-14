@@ -11,7 +11,7 @@ namespace compipascal1.Instrucciones
     {
         public int Linea { get; set; }
         public int Columna { get; set; }
-        public object Ejecutar(Entorno ent, AST tree)
+        public object Ejecutar(Entorno ent, AST tree, Erroresglo herror)
         {
             throw new NotImplementedException();
         }

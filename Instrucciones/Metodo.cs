@@ -18,7 +18,7 @@ namespace compipascal1.Instrucciones
         private LinkedList<Expresion> valorparam;
         private LinkedList<Instruccion> instrucciones = new LinkedList<Instruccion>();
 
-        public object Ejecutar(Entorno ent, AST tree)
+        public object Ejecutar(Entorno ent, AST tree, Erroresglo herror)
         {
             try
             {
@@ -30,7 +30,7 @@ namespace compipascal1.Instrucciones
 
                 foreach (Expresion temp in valorparam)
                 {
-                    obtenidos.AddLast(new Literal(temp.resolver(ent, tree).valor, 0, 0));
+                    obtenidos.AddLast(new Literal(temp.resolver(ent, tree,herror).valor, temp.Linea, temp.Columna));
                 }
 
                 if (parametos == null)
@@ -56,26 +56,27 @@ namespace compipascal1.Instrucciones
                         Simbolos temp3 = new Simbolos(parr.valor, parr.tipo, parr.id);
                         simlss.AddLast(temp3);
                         Declaracion decla = new Declaracion(simlss, parr.tipo, valexp, valexp.Linea, valexp.Columna);
-                        decla.Ejecutar(localfun, tree);
+                        decla.Ejecutar(localfun, tree,herror);
                     }
 
                     foreach (Instruccion inst in instrucciones)
                     {
-                        Object resul = inst.Ejecutar(localfun, tree);
+                        Object resul = inst.Ejecutar(localfun, tree,herror);
 
                         if (resul != null)
-                            throw new Errorp(Linea,Columna,"Es un procedimiento no admite retorno","Semantico");
+                            throw new Errorp(Linea,Columna,"Es un procedimiento no admite retorno","Semantico", ent.nombre);
                     }
                 }
                 else
                 {
-                    throw new Errorp(Linea, Columna, "El procedure no acepta esta cantidad " + obtenidos.Count + " de parametros", "Semantico");
+                    throw new Errorp(Linea, Columna, "El procedure no acepta esta cantidad " + obtenidos.Count + " de parametros", "Semantico", ent.nombre);
                 }
 
             }
-            catch (Exception e)
+            catch (Errorp e)
             {
-                // guardar error
+                herror.adderr(e);
+                Form1.errorcon.AppendText(e.ToString() + "\n");
             }
             return null;
         }

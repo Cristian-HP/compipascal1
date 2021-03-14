@@ -21,23 +21,23 @@ namespace compipascal1.Instrucciones
         public int Linea { get; set; }
         public int Columna { get; set; }
 
-        public  object Ejecutar(Entorno ent, AST tree)
+        public  object Ejecutar(Entorno ent, AST tree, Erroresglo herror)
         {
             
             try
             {
-                Simbolos ini = inicio.resolver(ent, tree);
-                Simbolos top = tope.resolver(ent, tree);
-                idt = id.resolver(ent, tree);
+                Simbolos ini = inicio.resolver(ent, tree,herror);
+                Simbolos top = tope.resolver(ent, tree,herror);
+                idt = id.resolver(ent, tree,herror);
                 if (ini.tipo.tipo != Tipos.INTEGER || ini.tipo.tipo != top.tipo.tipo)
-                    throw new Errorp(Linea, Columna, "No es posible ejecutar la instruccion for dado que el tipo de dato no concuendan deben ser solo enteros", "Semantico");
+                    throw new Errorp(Linea, Columna, "No es posible ejecutar la instruccion for dado que el tipo de dato no concuendan deben ser solo enteros", "Semantico", ent.nombre);
                 if (ini.tipo.tipo == idt.tipo.tipo)
                 {
                     idt.valor = ini.valor;
                     ent.asignavariable(idt.id.ToString().ToLower(), idt);
                 }
                 else
-                    throw new Errorp(Linea, Columna, "No es posible asignar un valor de tipo: " + ini.tipo.tipo.ToString() + " A una variable de  Tipo " + idt.tipo.tipo.ToString(), "Semantico");
+                    throw new Errorp(Linea, Columna, "No es posible asignar un valor de tipo: " + ini.tipo.tipo.ToString() + " A una variable de  Tipo " + idt.tipo.tipo.ToString(), "Semantico", ent.nombre);
 
                 if (direcion.Equals("to", StringComparison.InvariantCultureIgnoreCase))
                 {
@@ -59,7 +59,7 @@ namespace compipascal1.Instrucciones
                             }
                             else
                             {
-                                object resul = inst.Ejecutar(ent, tree);
+                                object resul = inst.Ejecutar(ent, tree,herror);
                                 if(resul is Break)
                                 {
                                     return null;
@@ -103,7 +103,7 @@ namespace compipascal1.Instrucciones
                             }
                             else
                             {
-                                object resul = inst.Ejecutar(ent, tree);
+                                object resul = inst.Ejecutar(ent, tree,herror);
                                 if (resul is Break)
                                 {
                                     return null;
@@ -127,8 +127,10 @@ namespace compipascal1.Instrucciones
 
                 }
             }
-            catch
+            catch(Errorp er)
             {
+                herror.adderr(er);
+                Form1.errorcon.AppendText(er.ToString() + "\n");
                 //guardar el error
             }
             return null;

@@ -13,13 +13,13 @@ namespace compipascal1.Instrucciones
         public int Columna { get; set; }
         private Expresion condicion;
         private LinkedList<Instruccion> instrucciones;
-        public  object Ejecutar(Entorno ent, AST tree)
+        public  object Ejecutar(Entorno ent, AST tree, Erroresglo herror)
         {
             try
             {
-                Simbolos temvalor = condicion.resolver(ent, tree);
+                Simbolos temvalor = condicion.resolver(ent, tree,herror);
                 if (temvalor.tipo.tipo != Tipos.BOOLEAN)
-                    throw new Errorp(Linea, Columna, "La expresion que tiene de condicion el 'WHILE' no es booleano sino de tipo " + temvalor.tipo.tipo.ToString(), "Semantico");
+                    throw new Errorp(Linea, Columna, "La expresion que tiene de condicion el 'WHILE' no es booleano sino de tipo " + temvalor.tipo.tipo.ToString(), "Semantico", ent.nombre);
                 do
                 {
                     foreach (Instruccion inst in instrucciones)
@@ -32,7 +32,7 @@ namespace compipascal1.Instrucciones
                             return inst;
                         else
                         {
-                            object temp = inst.Ejecutar(ent, tree);
+                            object temp = inst.Ejecutar(ent, tree,herror);
                             if (temp is Break)
                                 return null;
                             else if (temp is Continue)
@@ -41,12 +41,14 @@ namespace compipascal1.Instrucciones
                                 return temp;
                         }
                     }
-                    temvalor = condicion.resolver(ent, tree);
+                    temvalor = condicion.resolver(ent, tree,herror);
                 }while (!bool.Parse(temvalor.valor.ToString())) ;
             }
-            catch
+            catch(Errorp er)
             {
                 //guardar valor;
+                herror.adderr(er);
+                Form1.errorcon.AppendText(er.ToString() + "\n");
             }
             return null;
         }

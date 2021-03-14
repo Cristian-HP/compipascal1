@@ -32,18 +32,19 @@ namespace compipascal1.Instrucciones
             this.Columna = columna;
         }
 
-        public  object Ejecutar(Entorno ent, AST tree)
+        public  object Ejecutar(Entorno ent, AST tree, Erroresglo herror)
         {
             if(variables.Count >1 && valor != null)
             {
-                throw new Exception();
+                throw new Errorp(Linea,Columna,"No es posible declarar una lista de variables con valor explicito","Semantico",ent.nombre);
             }else if (variables.Count == 1 && valor != null)
             {
                 foreach (Simbolos temp1 in variables)
                 {
-                    temp1.valor = valor.resolver(ent, tree);
+                    temp1.valor = valor.resolver(ent, tree,herror);
                     temp1.tipo = tipo;
                     ent.declararVariable(temp1.id, temp1,Linea,Columna);
+                    Form1.Tablasim.AddLast(new TablasimbolosRep(temp1.id,Linea,Columna,ent.nombre,temp1.tipo.tipo.ToString()));
                 }
 
             }
@@ -63,6 +64,7 @@ namespace compipascal1.Instrucciones
                         aux1.valor = "";
                     }
                     ent.declararVariable(aux1.id, aux1,Linea,Columna);
+                    Form1.Tablasim.AddLast(new TablasimbolosRep(aux1.id, Linea, Columna, ent.nombre, aux1.tipo.tipo.ToString()));
                 }
             }
             return null;

@@ -22,7 +22,7 @@ namespace compipascal1.Instrucciones
             this.jump = salto;
         }
 
-        public  object Ejecutar(Entorno ent, AST tree )
+        public  object Ejecutar(Entorno ent, AST tree, Erroresglo herror)
         {
             string valor = "";
             try
@@ -30,7 +30,7 @@ namespace compipascal1.Instrucciones
                 Simbolos simb;
                 foreach(Expresion expre in expresion)
                 {
-                    simb = expre.resolver(ent, tree);
+                    simb = expre.resolver(ent, tree,herror);
                     valor += simb.ToString();
                 }
                 if (jump)
@@ -38,8 +38,10 @@ namespace compipascal1.Instrucciones
                 else
                     Form1.consola2.AppendText(valor);
             }
-            catch
+            catch(Errorp er)
             {
+                herror.adderr(er);
+                Form1.errorcon.AppendText(er.ToString() + "\n");
                 //agregar errores
             }
 

@@ -14,15 +14,15 @@ namespace compipascal1.Instrucciones
         private Expresion condicion;
         private LinkedList<Case> lista_case;
         private Instruccion defaultcase;
-        public object Ejecutar(Entorno ent, AST tree)
+        public object Ejecutar(Entorno ent, AST tree, Erroresglo herror)
         {
             try
             {
-                Simbolos condi = condicion.resolver(ent, tree);
+                Simbolos condi = condicion.resolver(ent, tree,herror);
                 foreach(Case opcion in lista_case)
                 {
                     opcion.initcondicion = condi;
-                    object resul =opcion.Ejecutar(ent, tree);
+                    object resul =opcion.Ejecutar(ent, tree,herror);
                     if(resul != null)
                     {
                         try
@@ -30,7 +30,7 @@ namespace compipascal1.Instrucciones
                             if (bool.Parse(resul.ToString()))
                                 return null;
                         }
-                        catch(Exception e)
+                        catch(Exception)
                         {
                             return resul;
                         }
@@ -38,10 +38,12 @@ namespace compipascal1.Instrucciones
                     } 
                 }
                 if (defaultcase != null)
-                    defaultcase.Ejecutar(ent, tree);
+                    defaultcase.Ejecutar(ent, tree,herror);
             }
-            catch
+            catch(Errorp er)
             {
+                herror.adderr(er);
+                Form1.errorcon.AppendText(er.ToString() + "\n");
                 //guardar el error
             }
             return null;

@@ -14,45 +14,40 @@ namespace compipascal1.Instrucciones
         public int Columna { get; set; }
         private string tempid;
         private LinkedList<Expresion> expresiones;
-        public  object Ejecutar(Entorno ent, AST tree)
+        public  object Ejecutar(Entorno ent, AST tree, Erroresglo herror)
         {
-            return resolver(ent, tree);
+            return resolver(ent, tree,herror);
         }
 
-        public Simbolos resolver(Entorno ent, AST tree)
+        public Simbolos resolver(Entorno ent, AST tree, Erroresglo herror)
         {
-            Funcion myfun = tree.getfuncion(tempid.ToLower());
-            Metodo mymet = tree.getMetodo(tempid.ToLower());
-            if(myfun == null && mymet == null)
-                throw new Errorp(Linea, Columna, "La Funcion/Procedimieto " + tempid + " no existen", "Semantico");
-            if (myfun != null)
+            try
             {
-                try
+                Funcion myfun = tree.getfuncion(tempid.ToLower());
+                Metodo mymet = tree.getMetodo(tempid.ToLower());
+                if (myfun == null && mymet == null)
+                    throw new Errorp(Linea, Columna, "La Funcion/Procedimieto " + tempid + " no existen", "Semantico", ent.nombre);
+                if (myfun != null)
                 {
                     myfun.setValParam(expresiones);
-                    Object resul = myfun.Ejecutar(ent, tree);
+                    Object resul = myfun.Ejecutar(ent, tree, herror);
                     if (resul is Exit)
                         return null;
                     else
                         return (Simbolos)resul;
                 }
-                catch (Exception e)
-                {
-                    //guardar el error
-                }
-            }
-            else
-            {
-                try
+                else
                 {
                     mymet.setValParam(expresiones);
-                    mymet.Ejecutar(ent, tree);
+                    mymet.Ejecutar(ent, tree, herror);
                     return null;
-                }catch(Exception e)
-                {
-
                 }
+            }catch(Errorp er)
+            {
+                herror.adderr(er);
+                Form1.errorcon.AppendText(er.ToString() + "\n");
             }
+            
            
             return null;
         }

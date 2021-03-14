@@ -6,21 +6,23 @@ namespace compipascal1.Simbolo
 {
     class Errorp : Exception
     {
-        private int Linea, Columna;
-        private string msg;
-        private string tipo;
-
-        public Errorp(int linea, int columna, string msg, string tipo)
+        public int Linea {get;set;}
+        public int Columna { get; set; }
+        public string msg { get; set; }
+        public string tipo { get; set; }
+        public string ambito { get; set; }
+        public Errorp(int linea, int columna, string msg, string tipo,string ambito)
         {
-            Linea = linea;
+            Linea = linea+1;
             Columna = columna;
             this.msg = msg;
             this.tipo = tipo;
+            this.ambito = ambito;
         }
 
         public override string ToString()
         {
-            return "Se encontro un error de tipo: " + this.tipo+" En la linea: "+this.Linea+" y columna: "+this.Columna +" Descripcion: "+this.msg;
+            return "Se encontro un error de tipo: " + this.tipo+" En la linea: "+this.Linea+" y columna: "+this.Columna +"En el ambito de"+this.ambito+" Descripcion: "+this.msg;
         }
     }
 }

@@ -20,7 +20,7 @@ namespace compipascal1.Instrucciones
         private LinkedList<Instruccion> instrucciones = new LinkedList<Instruccion>();
         public Tipo tipo;
 
-        public  object Ejecutar(Entorno ent, AST tree)
+        public  object Ejecutar(Entorno ent, AST tree, Erroresglo herror)
         {
             try
             {
@@ -32,7 +32,7 @@ namespace compipascal1.Instrucciones
 
                 foreach(Expresion temp in valorparam)
                 {
-                    obtenidos.AddLast(new Literal(temp.resolver(ent,tree).valor,0,0));
+                    obtenidos.AddLast(new Literal(temp.resolver(ent,tree,herror).valor,temp.Linea,temp.Columna));
                 }
 
                 if (parametos == null)
@@ -58,21 +58,21 @@ namespace compipascal1.Instrucciones
                         Simbolos temp3 = new Simbolos(parr.valor,parr.tipo,parr.id);
                         simlss.AddLast(temp3);
                         Declaracion decla = new Declaracion(simlss, parr.tipo, valexp, valexp.Linea, valexp.Columna);
-                        decla.Ejecutar(localfun, tree);
+                        decla.Ejecutar(localfun, tree,herror);
                     }
 
                     foreach (Instruccion inst in instrucciones)
                     {
                         if(inst is Exit)
                         {
-                            return inst.Ejecutar(localfun, tree);
+                            return inst.Ejecutar(localfun, tree,herror);
                         }
-                        Object resul = inst.Ejecutar(localfun, tree);
+                        Object resul = inst.Ejecutar(localfun, tree,herror);
 
                         if (resul is Exit)
                         {
                             Exit temp = (Exit)resul;
-                            return temp.Ejecutar(localfun, tree);
+                            return temp.Ejecutar(localfun, tree,herror);
                         }
                             
                     }
@@ -80,12 +80,14 @@ namespace compipascal1.Instrucciones
                 }
                 else
                 {
-                    throw new Errorp(Linea, Columna, "La Funcion no acepta esta cantidad "+obtenidos.Count+" de parametros", "Semantico");
+                    throw new Errorp(Linea, Columna, "La Funcion no acepta esta cantidad "+obtenidos.Count+" de parametros", "Semantico", ent.nombre);
                 }
 
-            }catch(Exception e)
+            }catch(Errorp er)
             {
                 // guardar error
+                herror.adderr(er);
+                Form1.errorcon.AppendText(er.ToString() + "\n");
             }
             return null;
         }

@@ -15,13 +15,13 @@ namespace compipascal1.Expresiones
         public Expresion Derecha { get; set; }
 
         public string tipoope { get; set; }
-        public Simbolos resolver(Entorno ent, AST tree)
+        public Simbolos resolver(Entorno ent, AST tree, Erroresglo herror)
         {
-            Simbolos izq = Izquierda.resolver(ent, tree);
-            Simbolos der = Derecha.resolver(ent, tree);
+            Simbolos izq = Izquierda.resolver(ent, tree,herror);
+            Simbolos der = Derecha.resolver(ent, tree,herror);
             Tipos tiporesul = Tablatipos.getTipo(izq.tipo, der.tipo, tipoope);
             if (tiporesul == Tipos.ERROR)
-                throw new Errorp(Linea, Columna, "No se puede realizar la operacion " + palabraope() + " entre " + izq.tipo.ToString() + " y un " + der.tipo.ToString(), "Semantico");
+                throw new Errorp(Linea, Columna, "No se puede realizar la operacion " + palabraope() + " entre " + izq.tipo.ToString() + " y un " + der.tipo.ToString(), "Semantico", ent.nombre);
 
             Tipo temptipo = new Tipo(tiporesul, null);
             Simbolos resul;

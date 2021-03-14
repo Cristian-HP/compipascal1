@@ -11,6 +11,6 @@ namespace compipascal1.abstracta
         public int Linea { get; set; }
         public int Columna { get; set; }
 
-        public abstract Simbolos resolver(Entorno ent, AST tree);
+        public abstract Simbolos resolver(Entorno ent, AST tree, Erroresglo herror);
     }
 }

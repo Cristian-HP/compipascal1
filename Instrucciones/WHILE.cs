@@ -13,13 +13,13 @@ namespace compipascal1.Instrucciones
         public int Columna { get; set; }
         private LinkedList<Instruccion> instrucciones;
         private Expresion valor;
-        public  object Ejecutar(Entorno ent, AST tree/*lista errores*/)
+        public  object Ejecutar(Entorno ent, AST tree, Erroresglo herror)
         {
             try
             {
-                Simbolos temvalor = valor.resolver(ent, tree);
+                Simbolos temvalor = valor.resolver(ent, tree,herror);
                 if (temvalor.tipo.tipo != Tipos.BOOLEAN)
-                    throw new Errorp(Linea, Columna, "La expresion que tiene de condicion el 'WHILE' no es booleano sino de tipo " + temvalor.tipo.tipo.ToString(), "Semantico");
+                    throw new Errorp(Linea, Columna, "La expresion que tiene de condicion el 'WHILE' no es booleano sino de tipo " + temvalor.tipo.tipo.ToString(), "Semantico", ent.nombre);
                 while (bool.Parse(temvalor.valor.ToString()))
                 {    
                     foreach (Instruccion inst in instrucciones)
@@ -32,7 +32,7 @@ namespace compipascal1.Instrucciones
                             return inst;
                         else
                         {
-                            object temp = inst.Ejecutar(ent, tree);
+                            object temp = inst.Ejecutar(ent, tree,herror);
                             if (temp is Break)
                                 return null;
                             else if (temp is Continue)
@@ -41,11 +41,13 @@ namespace compipascal1.Instrucciones
                                 return temp;
                         }
                     }
-                    temvalor = valor.resolver(ent, tree);
+                    temvalor = valor.resolver(ent, tree,herror);
                 }
             }
-            catch
+            catch(Errorp er)
             {
+                herror.adderr(er);
+                Form1.errorcon.AppendText(er.ToString() + "\n");
                 //guardar el error
             }
            

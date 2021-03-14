@@ -14,20 +14,20 @@ namespace compipascal1.Instrucciones
         public LinkedList<Expresion> condicion;
         private LinkedList<Instruccion> instrucciones;
         public Simbolos initcondicion { get; set; }
-        public  object Ejecutar(Entorno ent, AST tree)
+        public  object Ejecutar(Entorno ent, AST tree, Erroresglo herror)
         {
             try
             {
                 foreach (Expresion exp in condicion)
                 {
-                    Simbolos mytem = exp.resolver(ent, tree);
-                    if (comparar(initcondicion, mytem))
+                    Simbolos mytem = exp.resolver(ent, tree,herror);
+                    if (comparar(initcondicion, mytem,ent))
                     {
                         foreach(Instruccion inst in instrucciones)
                         {
                             if (inst is Break || inst is Continue || inst is Exit)
                                 return inst;
-                            Object resl=inst.Ejecutar(ent, tree);
+                            Object resl=inst.Ejecutar(ent, tree,herror);
                             if (resl is  Exit || resl is Break || resl is Continue)
                                 return resl;
                         }
@@ -36,9 +36,10 @@ namespace compipascal1.Instrucciones
                 }
                 return null;
             }
-            catch
+            catch(Errorp er)
             {
-                //guardar el error
+                herror.adderr(er);
+                Form1.errorcon.AppendText(er.ToString() + "\n");
                 return null;
             }
         }
@@ -51,7 +52,7 @@ namespace compipascal1.Instrucciones
             Columna = columna;
         }
 
-        private bool comparar(Simbolos initcondi,Simbolos mycondi)
+        private bool comparar(Simbolos initcondi,Simbolos mycondi,Entorno ent)
         {
             if(initcondi.tipo.tipo == mycondi.tipo.tipo)
             {
@@ -73,7 +74,7 @@ namespace compipascal1.Instrucciones
             }
             else
             {
-                throw new Errorp(Linea,Columna,"El tipo de la condicon Case y su opcion No Coninciden","Semantico");
+                throw new Errorp(Linea,Columna,"El tipo de la condicon Case y su opcion No Coninciden","Semantico", ent.nombre);
             }
         }
     }
