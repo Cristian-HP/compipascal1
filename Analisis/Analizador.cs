@@ -4,8 +4,10 @@ using compipascal1.Simbolo;
 using Irony.Parsing;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
+using System.Threading;
 
 namespace compipascal1.Analisis
 {
@@ -47,6 +49,16 @@ namespace compipascal1.Analisis
                     byte[] info = new UTF8Encoding(true).GetBytes(grafoDot);
                     fs.Write(info, 0, info.Length);
                 }
+                Thread.Sleep(2000);
+                ProcessStartInfo startInfo = new ProcessStartInfo
+                {
+                    FileName = "dot.exe",
+                    Arguments = "-Tpng C:\\compiladores2\\ast.dot -o C:\\compiladores2\\AST.png",
+                    UseShellExecute = false
+                };
+                Process.Start(startInfo);
+
+                Thread.Sleep(2000);
             }
             catch (Exception ex)
             {
@@ -58,7 +70,7 @@ namespace compipascal1.Analisis
         {
             CreadorAST arbolgenerado = new CreadorAST(tree);
             AST ast = arbolgenerado.mytree;
-            Entorno ent = new Entorno(null);
+            Entorno ent = new Entorno(null,"GLOBAL");
             if(ast != null)
             {
                 foreach(Instruccion inst in ast.instrucciones)

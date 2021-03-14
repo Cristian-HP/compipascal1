@@ -11,6 +11,7 @@ namespace compipascal1.Simbolo
         REAL = 1,
         STRING = 2,
         OBJECT = 4,
+        VOID = 5,
         ERROR = 9
     }
     class Tipo

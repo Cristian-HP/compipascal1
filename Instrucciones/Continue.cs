@@ -7,21 +7,19 @@ using System.Text;
 
 namespace compipascal1.Instrucciones
 {
-    class Group : Instruccion
+    class Continue : Instruccion
     {
         public int Linea { get; set; }
         public int Columna { get; set; }
-        public LinkedList<Instruccion> instrucciones { get; set; }
-
-        public Group(LinkedList<Instruccion> instrucciones,int linea,int columna)
-        {
-            this.instrucciones = instrucciones;
-            this.Linea = linea;
-            this.Columna = columna;
-        }
         public object Ejecutar(Entorno ent, AST tree)
         {
             throw new NotImplementedException();
+        }
+
+        public Continue(int linea,int columna)
+        {
+            Linea = linea;
+            Columna = columna;
         }
     }
 }

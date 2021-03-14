@@ -9,13 +9,15 @@ namespace compipascal1.Expresiones
 {
     class Arimetica : Expresion
     {
+        public int Linea { get; set; }
+        public int Columna { get; set; }
         public Expresion Izquierda { get; set; }
         public Expresion Derecha { get; set; }
 
         public string tipoope { get; set; }
 
         private bool unario;
-        public override Simbolos resolver(Entorno ent, AST tree)
+        public  Simbolos resolver(Entorno ent, AST tree)
         {
             if (unario)
             {
@@ -79,16 +81,20 @@ namespace compipascal1.Expresiones
                         }
                         else if (tiporesul == Tipos.INTEGER)
                         {
-                            resul = new Simbolos(int.Parse(izq.valor.ToString()) - int.Parse(der.valor.ToString()), temptipo, "");
+                            resul = new Simbolos(int.Parse(izq.valor.ToString()) / int.Parse(der.valor.ToString()), temptipo, "");
                             return resul;
                         }
                         else
                         {
-                            resul = new Simbolos(double.Parse(izq.valor.ToString()) - double.Parse(der.valor.ToString()), temptipo, "");
+                            resul = new Simbolos(double.Parse(izq.valor.ToString()) / double.Parse(der.valor.ToString()), temptipo, "");
                             return resul;
                         }
                     case "%":
-                        resul = new Simbolos(int.Parse(izq.valor.ToString()) - int.Parse(der.valor.ToString()), temptipo, "");
+                        if (der.valor.ToString().Equals("0"))
+                        {
+                            throw new Errorp(Linea, Columna, "Indefinicion, No es posible la division entre '0'", "Semantico");
+                        }
+                        resul = new Simbolos(int.Parse(izq.valor.ToString()) % int.Parse(der.valor.ToString()), temptipo, "");
                         return resul;
                     default:
                         if (tiporesul == Tipos.INTEGER)

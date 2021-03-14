@@ -39,13 +39,14 @@ namespace compipascal1
             // 
             this.richTextBox1.Location = new System.Drawing.Point(12, 12);
             this.richTextBox1.Name = "richTextBox1";
-            this.richTextBox1.Size = new System.Drawing.Size(562, 494);
+            this.richTextBox1.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.ForcedBoth;
+            this.richTextBox1.Size = new System.Drawing.Size(735, 494);
             this.richTextBox1.TabIndex = 0;
             this.richTextBox1.Text = "";
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(603, 70);
+            this.button1.Location = new System.Drawing.Point(753, 58);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(145, 91);
             this.button1.TabIndex = 1;

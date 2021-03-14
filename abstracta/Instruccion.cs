@@ -6,12 +6,11 @@ using System.Text;
 
 namespace compipascal1.abstracta
 {
-    abstract class Instruccion
+    interface Instruccion
     {
         public abstract object Ejecutar(Entorno ent, AST tree);
 
         public int Linea { get; set; }
         public int Columna { get; set; }
-
     }
 }

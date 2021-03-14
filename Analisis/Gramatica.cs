@@ -144,7 +144,6 @@ namespace compipascal1.Analisis
             NonTerminal OPC = new NonTerminal("OPC");
             NonTerminal EBC = new NonTerminal("EBC");
             NonTerminal L_EBC = new NonTerminal("L_EBC");
-            NonTerminal FORVA = new NonTerminal("FORVA");
             #endregion
 
             #region GRAMATICA
@@ -249,16 +248,14 @@ namespace compipascal1.Analisis
 
             LLAMA.Rule = id + parabre + L_EXP + parcierra + ptocoma
                         | id + parabre + parcierra + ptocoma
-                        | id + ptocoma
                         | id + parabre + L_EXP + parcierra
                         | id + parabre + parcierra
-                        | id
                         ;
 
             ELOG.Rule = ELOG + rand + ELOG
                       | ELOG + ror + ELOG
                       | rnot + ELOG
-                      | parabre + ELOG + ELOG
+                      | parabre + ELOG + parcierra
                       | ERELA
                       ;
             ERELA.Rule = ERELA + mayor + ERELA
@@ -276,9 +273,11 @@ namespace compipascal1.Analisis
                       | EARI + multi + EARI
                       | EARI + div + EARI
                       | EARI + mod + EARI
+                      | parabre + EARI + parcierra
                       | menos + EARI
                       | number
                       | cadena
+                      | id
                       | LLAMA
                       ;
 
@@ -295,10 +294,11 @@ namespace compipascal1.Analisis
                       | GTS
                       | LLAMA
                       ;
+            INST.ErrorRule = SyntaxError + rend;
 
-            COT.Rule = rcotinue;
+            COT.Rule = rcotinue + ptocoma;
 
-            BRK.Rule = rbreak;
+            BRK.Rule = rbreak + ptocoma;
 
             IF.Rule = rif + ELOG + rthen + INST
                     | rif + ELOG + rthen + INST + ELSE
@@ -317,8 +317,8 @@ namespace compipascal1.Analisis
                        | rdownto
                        ;
 
-            CASE.Rule = rcase + ELOG + rof + L_OPC + rend + ptocoma
-                      | rcase + ELOG + rof + L_OPC + ELSE + rend + ptocoma
+            CASE.Rule = rcase + id + rof + L_OPC + rend + ptocoma
+                      | rcase + id + rof + L_OPC + ELSE + rend + ptocoma
                       ;
 
             L_OPC.Rule = MakePlusRule(L_OPC, OPC);
@@ -332,6 +332,7 @@ namespace compipascal1.Analisis
             EBC.Rule = number
                     | bolean
                     | cadena
+                    | menos + number;
                     ;
 
             REP.Rule = rrepeat + LISTA_INTS + runtil + ELOG + ptocoma
@@ -340,12 +341,10 @@ namespace compipascal1.Analisis
             WL.Rule = rwhile + ELOG + rdo + INST
                     | rwhile + ELOG + rdo + BEG
                     ;
-            FORVA.Rule = number
-                       | bolean
-                       ;
+            
 
-            FOR.Rule = rfor + id + asig + FORVA + FORDI + FORVA + rdo + INST
-                     | rfor + id + asig + FORVA + FORDI + FORVA + rdo + BEG
+            FOR.Rule = rfor + id + asig + EARI + FORDI + EARI + rdo + INST
+                     | rfor + id + asig + EARI + FORDI + EARI + rdo + BEG
                      ;
 
             WRT.Rule = writeln + parabre + L_EXP + parcierra + ptocoma

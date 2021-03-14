@@ -12,6 +12,8 @@ namespace compipascal1.Instrucciones
         public Expresion valor { get; set; }
         public Tipo tipo { get; set; }
         public LinkedList<Simbolos> variables { get; set; }
+        public int Linea { get; set; }
+        public int Columna { get; set; }
 
         public Declaracion(LinkedList<Simbolos> variables, Tipo tipo, int linea, int columna)
         {
@@ -30,7 +32,7 @@ namespace compipascal1.Instrucciones
             this.Columna = columna;
         }
 
-        public override object Ejecutar(Entorno ent, AST tree)
+        public  object Ejecutar(Entorno ent, AST tree)
         {
             if(variables.Count >1 && valor != null)
             {
@@ -41,7 +43,7 @@ namespace compipascal1.Instrucciones
                 {
                     temp1.valor = valor.resolver(ent, tree);
                     temp1.tipo = tipo;
-                    ent.declararVariable(temp1.id, temp1);
+                    ent.declararVariable(temp1.id, temp1,Linea,Columna);
                 }
 
             }
@@ -60,7 +62,7 @@ namespace compipascal1.Instrucciones
                     {
                         aux1.valor = "";
                     }
-                    ent.declararVariable(aux1.id, aux1);
+                    ent.declararVariable(aux1.id, aux1,Linea,Columna);
                 }
             }
             return null;

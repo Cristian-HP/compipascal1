@@ -9,15 +9,17 @@ namespace compipascal1.Expresiones
 {
     class Literal : Expresion
     {
+        public int Linea { get; set; }
+        public int Columna { get; set; }
         public object valor { get; set; }
 
         public Literal(object valor,int linea,int columna)
         {
             this.valor = valor;
             Columna = columna;
-
+            Linea = linea;
         }
-        public override Simbolos resolver(Entorno ent, AST tree)
+        public  Simbolos resolver(Entorno ent, AST tree)
         {
             Tipos temp2 = Obtenertipo(valor);
             Tipo tipo = new Tipo(temp2, null);

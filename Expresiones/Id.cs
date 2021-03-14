@@ -9,10 +9,12 @@ namespace compipascal1.Expresiones
 {
     class Id : Expresion
     {
+        public int Linea { get; set; }
+        public int Columna { get; set; }
         public string name { get; set; }
-        public override Simbolos resolver(Entorno ent, AST tree)
+        public  Simbolos resolver(Entorno ent, AST tree)
         {
-            Simbolos temp = ent.obtenerVariable(name);
+            Simbolos temp = ent.obtenerVariable(name.ToLower());
             if (temp != null)
             {
                 return temp;

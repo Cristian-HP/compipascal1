@@ -9,22 +9,76 @@ namespace compipascal1.Expresiones
 {
     class Logica : Expresion
     {
-        public Expresion izquierda { get; set; }
-        public Expresion derecha { get; set; }
+        public int Linea { get; set; }
+        public int Columna { get; set; }
+        public Expresion Izquierda { get; set; }
+        public Expresion Derecha { get; set; }
 
-        public string tipo { get; set; }
+        public string tipoope { get; set; }
 
         private bool unario;
-        public override Simbolos resolver(Entorno ent, AST tree)
+        public  Simbolos resolver(Entorno ent, AST tree)
         {
-            throw new NotImplementedException();
+            if (unario)
+            {
+                Simbolos unariotemp = Izquierda.resolver(ent, tree);
+                if (unariotemp.tipo.tipo == Tipos.INTEGER)
+                {
+                    return new Simbolos(~int.Parse(unariotemp.ToString()), new Tipo(unariotemp.tipo.tipo, ""), "");
+                }
+                else if (unariotemp.tipo.tipo == Tipos.BOOLEAN)
+                {
+                    return new Simbolos( !bool.Parse(unariotemp.ToString()), new Tipo(unariotemp.tipo.tipo, ""), "");
+                }
+                else
+                {
+                    throw new Errorp(Linea, Columna, "No se puede realizar la operacion unaria " + palabraope() + " con el valor de tipo " + unariotemp.tipo.ToString(), "Semantico");
+                }
+            }
+            else
+            {
+                Simbolos izq = Izquierda.resolver(ent, tree);
+                Simbolos der = Derecha.resolver(ent, tree);
+                Tipos tiporesul = Tablatipos.getTipo(izq.tipo, der.tipo, tipoope);
+                if (tiporesul == Tipos.ERROR)
+                    throw new Errorp(Linea, Columna, "No se puede realizar la operacion " + palabraope() + " entre " + izq.tipo.ToString() + " y un " + der.tipo.ToString(), "Semantico");
+
+                Tipo temptipo = new Tipo(tiporesul, null);
+                Simbolos resul;
+
+                switch (tipoope.ToLower())
+                {
+                    case "and":
+                        if (tiporesul == Tipos.INTEGER)
+                        {
+                            resul = new Simbolos(int.Parse(izq.valor.ToString()) & int.Parse(der.valor.ToString()), temptipo,"");
+                            return resul;
+                        }
+                        else
+                        {
+                            resul = new Simbolos(bool.Parse(izq.valor.ToString()) && bool.Parse(der.valor.ToString()), temptipo, "");
+                            return resul;
+                        }
+                    default:
+                        if (tiporesul == Tipos.INTEGER)
+                        {
+                            resul = new Simbolos(int.Parse(izq.valor.ToString()) | int.Parse(der.valor.ToString()), temptipo, "");
+                            return resul;
+                        }
+                        else
+                        {
+                            resul = new Simbolos(bool.Parse(izq.valor.ToString()) || bool.Parse(der.valor.ToString()), temptipo, "");
+                            return resul;
+                        }
+                }
+            }
         }
 
         public Logica(Expresion izquierda, Expresion derecha, string tipo,int linea,int columna)
         {
-            this.izquierda = izquierda;
-            this.derecha = derecha;
-            this.tipo = tipo;
+            this.Izquierda = izquierda;
+            this.Derecha = derecha;
+            this.tipoope = tipo;
             this.Linea = linea;
             this.Columna = columna;
             this.unario = false;
@@ -32,11 +86,25 @@ namespace compipascal1.Expresiones
 
         public Logica(Expresion izquierda, string tipo,int linea,int columna)
         {
-            this.izquierda = izquierda;
-            this.tipo = tipo;
+            this.Izquierda = izquierda;
+            this.tipoope = tipo;
             this.Linea = linea;
             this.Columna = columna;
             this.unario = true;
+        }
+
+
+        private string palabraope()
+        {
+            switch (tipoope.ToLower())
+            {
+                case "not":
+                    return "Negacion logica";
+                case "and":
+                    return "AND logico";
+                default:
+                    return "OR logico";
+            }
         }
     }
 }
