@@ -22,12 +22,14 @@ namespace compipascal1.abstracta
         }
         public void graficar()
         {
-            string errorestext = "<html>\n <body> <h2>Errores proyecto 1</h2> <table style=\"width:100%\" border=\"1\"> <tr> <th>Tipo</th> <th>Descripcion del error</th><th>Linea</th> <th>Columna</th></tr> \n";
+            string errorestext = "<html>\n <body> <h2>Errores proyecto 1</h2> <table style=\"width:100%\" border=\"1\"> <tr> <th>Tipo</th><th>Ambito</th> <th>Descripcion del error</th><th>Linea</th> <th>Columna</th></tr> \n";
             foreach (Errorp elerror in errores)
             {
                 errorestext += "<tr>" +
                    "<td>" + elerror.tipo +
                    "</td>" +
+                   "<td>"+elerror.ambito+
+                   "</td>"+
                    "<td>" + elerror.msg +
                    "</td>" +
                    "<td>" + elerror.Linea +
